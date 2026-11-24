@@ -37,3 +37,12 @@ npm run dev
 
 Your frontend should start on:
 http://localhost:5173
+
+Technology and libraries
+React, Router,
+For extract text - pdfjs-dist, mammoth, 
+clerk for authentication
+DB = postgreSQL, embedding db = pgvector
+for schema = prisma
+backend basic setup = docker
+
