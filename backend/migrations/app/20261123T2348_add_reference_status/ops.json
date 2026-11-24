@@ -1,0 +1,85 @@
+[
+  {
+    "id": "column.ReviewFinding.referenceStatus",
+    "label": "Add column referenceStatus to ReviewFinding",
+    "summary": "Adds column referenceStatus to table ReviewFinding",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ReviewFinding"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"referenceStatus\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceStatus"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"referenceStatus\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"referenceStatus\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"referenceStatus\" text DEFAULT ('') NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"referenceStatus\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ALTER COLUMN \"referenceStatus\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"referenceStatus\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceStatus"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"referenceStatus\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"referenceStatus\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceStatus",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"referenceStatus\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceStatus"
+        ]
+      },
+      {
+        "description": "verify column \"referenceStatus\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceStatus",
+          "text"
+        ]
+      }
+    ]
+  }
+]

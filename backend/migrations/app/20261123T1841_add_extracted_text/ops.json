@@ -1,0 +1,62 @@
+[
+  {
+    "id": "column.public.Contract.extractedText",
+    "label": "Add column \"extractedText\" to \"Contract\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "extractedText",
+        "table": "Contract"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"extractedText\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Contract",
+          "extractedText"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"extractedText\" on \"Contract\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"extractedText\"",
+        "sql": "ALTER TABLE \"public\".\"Contract\" ADD COLUMN \"extractedText\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"extractedText\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Contract",
+          "extractedText"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"extractedText\" on \"Contract\""
+        }
+      },
+      {
+        "description": "verify column \"extractedText\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Contract",
+          "extractedText",
+          "text"
+        ]
+      }
+    ]
+  }
+]

@@ -1,0 +1,692 @@
+[
+  {
+    "id": "dropTable.DocumentChunk",
+    "label": "Drop table \"DocumentChunk\"",
+    "operationClass": "destructive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "DocumentChunk"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"DocumentChunk\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"DocumentChunk\""
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"DocumentChunk\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop table \"DocumentChunk\"",
+        "sql": "DROP TABLE \"public\".\"DocumentChunk\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"DocumentChunk\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"DocumentChunk\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"DocumentChunk\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "table.MainContract",
+    "label": "Create table \"MainContract\"",
+    "summary": "Creates table \"MainContract\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "MainContract"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"MainContract\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"MainContract\""
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "table \"MainContract\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"MainContract\"",
+        "sql": "CREATE TABLE \"public\".\"MainContract\" (\n  \"createdAt\" timestamptz(3) DEFAULT (now()) NOT NULL,\n  \"extractedText\" text NOT NULL,\n  \"fileName\" text NOT NULL,\n  \"filePath\" text NOT NULL,\n  \"fileSize\" int4 NOT NULL,\n  \"id\" text NOT NULL,\n  \"updatedAt\" timestamptz(3) DEFAULT (now()) NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"MainContract\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_class\" AS \"c\" WHERE (\"c\".\"oid\" = to_regclass($1) AND (\"c\".\"relkind\" = $2 OR \"c\".\"relkind\" = $3))) AS \"result\"",
+        "params": [
+          "\"public\".\"MainContract\"",
+          "r",
+          "p"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "table \"MainContract\""
+        }
+      }
+    ]
+  },
+  {
+    "id": "column.public.ReviewFinding.fullClause",
+    "label": "Add column \"fullClause\" to \"ReviewFinding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "fullClause",
+        "table": "ReviewFinding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fullClause\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "fullClause"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"fullClause\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"fullClause\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"fullClause\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fullClause\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "fullClause"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"fullClause\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"fullClause\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "fullClause",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.ReviewFinding.referenceFullClause",
+    "label": "Add column \"referenceFullClause\" to \"ReviewFinding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "referenceFullClause",
+        "table": "ReviewFinding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"referenceFullClause\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceFullClause"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"referenceFullClause\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"referenceFullClause\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"referenceFullClause\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"referenceFullClause\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceFullClause"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"referenceFullClause\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"referenceFullClause\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceFullClause",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.ReviewFinding.referencePageNumber",
+    "label": "Add column \"referencePageNumber\" to \"ReviewFinding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "referencePageNumber",
+        "table": "ReviewFinding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"referencePageNumber\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referencePageNumber"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"referencePageNumber\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"referencePageNumber\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"referencePageNumber\" int4"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"referencePageNumber\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referencePageNumber"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"referencePageNumber\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"referencePageNumber\" has type \"integer\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referencePageNumber",
+          "integer"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.ReviewFinding.referenceQuote",
+    "label": "Add column \"referenceQuote\" to \"ReviewFinding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "referenceQuote",
+        "table": "ReviewFinding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"referenceQuote\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceQuote"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"referenceQuote\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"referenceQuote\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"referenceQuote\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"referenceQuote\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceQuote"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"referenceQuote\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"referenceQuote\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceQuote",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.ReviewFinding.referenceSection",
+    "label": "Add column \"referenceSection\" to \"ReviewFinding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "referenceSection",
+        "table": "ReviewFinding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"referenceSection\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceSection"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"referenceSection\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"referenceSection\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"referenceSection\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"referenceSection\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceSection"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"referenceSection\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"referenceSection\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceSection",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.ReviewFinding.referenceSummary",
+    "label": "Add column \"referenceSummary\" to \"ReviewFinding\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "referenceSummary",
+        "table": "ReviewFinding"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"referenceSummary\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceSummary"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"referenceSummary\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"referenceSummary\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"referenceSummary\" text"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"referenceSummary\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceSummary"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"referenceSummary\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"referenceSummary\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "referenceSummary",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.User.role",
+    "label": "Add column \"role\" to \"User\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "role",
+        "table": "User"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"role\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "User",
+          "role"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"role\" on \"User\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"role\"",
+        "sql": "ALTER TABLE \"public\".\"User\" ADD COLUMN \"role\" text DEFAULT 'USER' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"role\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "User",
+          "role"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"role\" on \"User\""
+        }
+      },
+      {
+        "description": "verify column \"role\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "User",
+          "role",
+          "text"
+        ]
+      },
+      {
+        "description": "verify column \"role\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "User",
+          "role",
+          "NO"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.Review.mainContractId",
+    "label": "Add column mainContractId to Review",
+    "summary": "Adds column mainContractId to table Review",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Review"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"mainContractId\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Review",
+          "mainContractId"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"mainContractId\" on \"Review\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"mainContractId\"",
+        "sql": "ALTER TABLE \"public\".\"Review\" ADD COLUMN \"mainContractId\" text DEFAULT ('') NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"mainContractId\"",
+        "sql": "ALTER TABLE \"public\".\"Review\" ALTER COLUMN \"mainContractId\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"mainContractId\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Review",
+          "mainContractId"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"mainContractId\" on \"Review\""
+        }
+      },
+      {
+        "description": "verify column \"mainContractId\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "Review",
+          "mainContractId",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"mainContractId\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "Review",
+          "mainContractId"
+        ]
+      },
+      {
+        "description": "verify column \"mainContractId\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "Review",
+          "mainContractId",
+          "text"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.ReviewFinding.matchStatus",
+    "label": "Add column matchStatus to ReviewFinding",
+    "summary": "Adds column matchStatus to table ReviewFinding",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "ReviewFinding"
+      }
+    },
+    "operationClass": "additive",
+    "precheck": [
+      {
+        "description": "ensure column \"matchStatus\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "matchStatus"
+        ],
+        "expectation": {
+          "expects": "absent",
+          "object": "column \"matchStatus\" on \"ReviewFinding\""
+        }
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"matchStatus\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ADD COLUMN \"matchStatus\" text DEFAULT ('') NOT NULL"
+      },
+      {
+        "description": "drop temporary default from column \"matchStatus\"",
+        "sql": "ALTER TABLE \"public\".\"ReviewFinding\" ALTER COLUMN \"matchStatus\" DROP DEFAULT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"matchStatus\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "matchStatus"
+        ],
+        "expectation": {
+          "expects": "present",
+          "object": "column \"matchStatus\" on \"ReviewFinding\""
+        }
+      },
+      {
+        "description": "verify column \"matchStatus\" is NOT NULL",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"is_nullable\" = $4)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "matchStatus",
+          "NO"
+        ]
+      },
+      {
+        "description": "verify column \"matchStatus\" has no default after temporary default removal",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3 AND \"column_default\" IS NOT NULL)) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "matchStatus"
+        ]
+      },
+      {
+        "description": "verify column \"matchStatus\" has type \"text\"",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_attribute\" AS \"a\" INNER JOIN \"pg_class\" AS \"c\" ON \"c\".\"oid\" = \"a\".\"attrelid\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"relnamespace\" WHERE (\"n\".\"nspname\" = $1 AND \"c\".\"relname\" = $2 AND \"a\".\"attname\" = $3 AND (format_type(\"a\".\"atttypid\", \"a\".\"atttypmod\")) = $4 AND NOT (\"a\".\"attisdropped\"))) AS \"result\"",
+        "params": [
+          "public",
+          "ReviewFinding",
+          "matchStatus",
+          "text"
+        ]
+      }
+    ]
+  }
+]
