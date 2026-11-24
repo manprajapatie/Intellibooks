@@ -5,6 +5,7 @@ import ContractReviewPage from "./features/auth/pages/ContractReviewPage";
 import SignInPage from "./features/auth/pages/SignInPage";
 import SignUpPage from "./features/auth/pages/SignUpPage";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
+import LandingPage from "./features/auth/pages/landingPage";
 
 
 
@@ -13,7 +14,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<SignInPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/sign-in/*" element={<SignInPage />} />
         <Route path="/sign-up/*" element={<SignUpPage />} />
         <Route
